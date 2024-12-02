@@ -11,13 +11,31 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-char	*ft_readingbuffer(int fd)
+static char	*ft_extract_newline(const char *str, int c)
+{
+	ssize_t	count;
+	ssize_t	index;
+	char *new_line;
+
+	index = ft_haschar(str,c);
+	if(index < 0)
+		return (NULL);
+	new_line = malloc((index + 1) * sizeof(char));
+	if(!new_line)
+		return (NULL);
+	while(str && str[count] && ++count < index)
+		new_line[count] = str[count];
+	return (new_line);
+}
+
+static char	*ft_readingbuffer(int fd)
 {
 	// 03. Declare and initialize necessary variables.
-	int			byte_read;
-	char		*content;
-	static char	buffer[BUFFER_SIZE + 1];
+	ssize_t	byte_read;
+	char	*content;
+	char	buffer[BUFFER_SIZE + 1];
 	// 04. Allocate memory dynamically to hold the content read. If memory allocation fails, return NULL.
 	content = malloc((BUFFER_SIZE + 1)* sizeof(char));
 	if(!content)
@@ -35,25 +53,30 @@ char	*ft_readingbuffer(int fd)
 
 char	*get_next_line(int fd)
 {
+	char	*line = NULL;
 	char	*content;
-	char	*holder;
-	int		index;
+	static char	*holder_buffer;
 	// 01. First, check if BUFFER_SIZE is greater than 0. If it is equal to or less than 0, return NULL.
 	// 02. Then, check if the file descriptor (fd) is valid (greater than or equal to 0). If not, return NULL.
 	if(BUFFER_SIZE <= 0 || fd < 0)
-		content = NULL;
-	else
-		content = ft_readingbuffer(fd);
-	holder = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	index = ft_has_newline(content);
-	if(index != -1)
-	{
-		ft_memcpy(holder, content, index);
-		free(content);
-	}
-	holder[index] = '\n';
-	holder[index + 1] = '\0';
-	return(holder);
+		return (NULL);
+	content = ft_readingbuffer(fd);
+	printf("Content 1 : %s\n", content);
+	printf("Content length : %ld\n", ft_strlen(content));
+	//ft_memcpy(holder_buffer, content, ft_strlen(content));
+	//printf("Holder buffer 1 : %s\n", holder_buffer);
+	// line = ft_strchr(holder_buffer,'\n');
+	// while(!line && content)
+	// {
+	// 	content = ft_readingbuffer(fd);
+	// 	holder_buffer = ft_strjoin_free(holder_buffer, content);
+	// 	line = ft_strchr(holder_buffer,'\n');
+	// }
+	// line = ft_extract_newline(holder_buffer, '\n');
+	// content = ft_strchr(holder_buffer,'\n');
+	// ft_memcpy(holder_buffer, content, ft_strlen(content));
+	// free(content);
+	return(line);
 }
 
 // 01. First, check if BUFFER_SIZE is greater than 0. If it is equal to or less than 0, return NULL.
