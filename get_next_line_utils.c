@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:23:19 by tsomacha          #+#    #+#             */
-/*   Updated: 2024/12/01 15:56:49 by tsomacha         ###   ########.fr       */
+/*   Updated: 2024/12/03 14:30:38 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,8 @@ size_t	ft_strlen(char *str)
 	size_t	len;
 
 	len = 0;
-	if(str)
-	{
-		while (str[len])
+	while (str && str[len] != '\0')
 			len++;
-	}
 	return (len);
 }
 
@@ -80,8 +77,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	ssize_t	step;
 	char	*result;
 
-	len1 = 0;
-	len2 = 0;
 	count = 0;
 	step = 0;
 	len1 = ft_strlen(s1);
@@ -99,6 +94,26 @@ char	*ft_strjoin(char *s1, char *s2)
 		result[count + step] = s2[step];
 		step++;
 	}
-	result[len1 + len2] = '\0';
+	result[count + step] = '\0';
+	return (result);
+}
+
+char	*ft_strdup(char *str)
+{
+	char	*result;
+	size_t	len;
+	int		count;
+
+	count = 0;
+	len = ft_strlen(str);
+	result = malloc((len + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	while(str && str[count])
+	{
+		result[count] = str[count];
+		count++;
+	}
+	result[count] = '\0';
 	return (result);
 }
