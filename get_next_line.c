@@ -18,15 +18,18 @@ static char	*ft_extract_newline(char *str, int c)
 	ssize_t	index;
 	char	*new_line;
 
-	index = ft_haschar(str, c);
 	count = 0;
+	index = ft_haschar(str, c);
 	if (index < 0)
 		return (str);
 	new_line = malloc((index + 2) * sizeof(char));
 	if (!new_line)
 		return (NULL);
 	while (str && str[count] && count < index)
-		new_line[count++] = str[count];
+	{
+		new_line[count] = str[count];
+		count++;
+	}
 	new_line[count] = '\n';
 	new_line[count + 1] = '\0';
 	return (new_line);
@@ -38,6 +41,7 @@ static char	*ft_readingbuffer(int fd)
 	char	*content;
 	char	buffer[BUFFER_SIZE + 1];
 
+	byte_read = 0;
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	content = malloc((BUFFER_SIZE + 1) * sizeof(char));
@@ -63,10 +67,10 @@ char	*get_next_line(int fd)
 	ssize_t		length;
 
 	index = 0;
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
+	length = 0;
 	content = ft_readingbuffer(fd);
 	holder_buffer = ft_strjoin(holder_buffer, content);
+	free(content);
 	index = ft_haschar(holder_buffer, '\n');
 	while (index == -1 && content)
 	{
@@ -75,7 +79,10 @@ char	*get_next_line(int fd)
 		index = ft_haschar(holder_buffer, '\n');
 	}
 	if (!content)
+	{
+		free(holder_buffer);
 		return (NULL);
+	}
 	length = ft_strlen(holder_buffer);
 	line = ft_extract_newline(holder_buffer, '\n');
 	content = ft_strchr(holder_buffer, '\n');

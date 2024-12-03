@@ -23,7 +23,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 		return (dest);
 	ptr1 = (unsigned char *)src;
 	ptr2 = (unsigned char *)dest;
-	while (count < n)
+	while (count < n && ptr1 && ptr2)
 	{
 		ptr2[count] = ptr1[count];
 		count++;
@@ -31,17 +31,20 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-size_t	ft_strlen(const char *str)
+size_t	ft_strlen(char *str)
 {
 	size_t	len;
 
 	len = 0;
-	while (str && str[len])
-		len++;
+	if(str)
+	{
+		while (str[len])
+			len++;
+	}
 	return (len);
 }
 
-ssize_t	ft_haschar(const char *str, int c)
+ssize_t	ft_haschar(char *str, int c)
 {
 	size_t	count;
 
@@ -87,9 +90,15 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!result)
 		return (NULL);
 	while (s1 && s1[count] && count < len1)
-		result[count++] = s1[count];
+	{
+		result[count] = s1[count];
+		count++;
+	}
 	while (s2 && s2[step] && step < len2)
-		result[count + step++] = s2[step];
+	{
+		result[count + step] = s2[step];
+		step++;
+	}
 	result[len1 + len2] = '\0';
 	return (result);
 }
