@@ -1,27 +1,74 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <unistd.h>
-#include <fcntl.h>
+#include <stdlib.h>
 
-char	*ft_strchr(char *str, int c)
+size_t	ft_strlen(char *str)
 {
-	size_t	count;
+	size_t	len;
+
+	len = 0;
+	while (str && str[len] != '\0')
+			len++;
+	return (len);
+}
+
+char	*ft_strdup(char *str)
+{
+	char	*result;
+	size_t	len;
+	int		count;
 
 	count = 0;
-	while (str && str[count])
+	len = ft_strlen(str);
+	result = malloc((len + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	while(str && str[count])
 	{
-		if (str[count] == (char)c)
-			return (&str[count]);
+		result[count] = str[count];
 		count++;
 	}
-	return (NULL);
+	result[count] = '\0';
+	return (result);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	ssize_t	len1;
+	ssize_t	len2;
+	ssize_t	count;
+	ssize_t	step;
+	char	*result;
+
+	count = 0;
+	step = 0;
+	len1 = 0;
+	len2 = 0;
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	result = malloc((len1 + len2 + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	while (s1 && s1[count] && count < len1)
+	{
+		result[count] = s1[count];
+		count++;
+	}
+	while (s2 && s2[step] && step < len2)
+	{
+		result[count + step] = s2[step];
+		step++;
+	}
+	result[count + step] = '\0';
+	return (result);
 }
 
 int main(void)
 {
-    char *str1 = "Hello this is a tesing string.\nHere I am trying to extarct a new line.";
-    char *result = ft_strchr(str1, '\n');
-    printf("Result : %s\n", result);
-    return (0);
+	static char *str1 = NULL;
+	char *str2 = "Hello!, I am trying to solve this bug in my code.";
+	char *str3 = ft_strdup("");
+	str1 = ft_strjoin(str2, str3);
+	printf("str1 : %s\n", str1);
+	return (0);
 }
