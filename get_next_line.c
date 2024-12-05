@@ -74,10 +74,10 @@ char	*get_next_line(int fd)
 	index = ft_haschar(holder_buffer, '\n');
 	if(index != -1)
 	{
-		line = ft_extract_newline(holder_buffer,'\n');
-		content = ft_strchr(holder_buffer, '\n');
+		line = ft_extract_newline(holder_buffer, '\n');
+		content = ft_strdup(&holder_buffer[index + 1]);
 		free(holder_buffer);
-		holder_buffer = ft_strdup(&content[1]);
+		holder_buffer = ft_strdup(content);
 		return (line);
 	}
 	content = ft_readingbuffer(fd);
@@ -97,7 +97,7 @@ char	*get_next_line(int fd)
 		line = ft_extract_newline(holder_buffer, '\n');
 		content = ft_strdup(&holder_buffer[index + 1]);
 		free(holder_buffer);
-		holder_buffer = ft_strdup(&content[2]);
+		holder_buffer = ft_strdup(content);
 		return (line);
 	}
 	if(holder_buffer && *holder_buffer)
