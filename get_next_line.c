@@ -6,14 +6,14 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:22:57 by tsomacha          #+#    #+#             */
-/*   Updated: 2024/12/04 17:53:42 by tsomacha         ###   ########.fr       */
+/*   Updated: 2024/12/05 19:32:48 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-static char	*ft_extract_newline(char *str, int c)
+char	*ft_extract_newline(char *str, int c)
 {
 	ssize_t	count;
 	ssize_t	index;
@@ -36,17 +36,15 @@ static char	*ft_extract_newline(char *str, int c)
 	return (new_line);
 }
 
-static char	*ft_readingbuffer(int fd)
+char	*ft_readingbuffer(int fd)
 {
 	ssize_t	byte_read;
 	char	*content;
 	char	buffer[BUFFER_SIZE + 1];
 
 	byte_read = 0;
+	content = NULL;
 	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
-	content = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!content)
 		return (NULL);
 	byte_read = read(fd, buffer, BUFFER_SIZE);
 	if (byte_read <= 0)
@@ -66,31 +64,28 @@ char	*get_next_line(int fd)
 	char		*content;
 	static char	*holder_buffer;
 
-	index = 0;
+	index = -1;
 	line = NULL;
 	content = NULL;
-	if(!holder_buffer)
-		holder_buffer = ft_strdup("");
-	index = ft_haschar(holder_buffer, '\n');
+	if(holder_buffer)
+		index = ft_haschar(holder_buffer, '\n');
 	if(index != -1)
 	{
 		line = ft_extract_newline(holder_buffer, '\n');
 		content = ft_strdup(&holder_buffer[index + 1]);
 		free(holder_buffer);
 		holder_buffer = ft_strdup(content);
+		free(content);
 		return (line);
 	}
-	content = ft_readingbuffer(fd);
-	if(!content)
-		return (NULL);
-	while(content && holder_buffer)
+	while(index == -1)
 	{
+		content = ft_readingbuffer(fd);
+		if(!content)
+			break;
 		holder_buffer = ft_strjoin(holder_buffer, content);
 		free(content);
 		index = ft_haschar(holder_buffer, '\n');
-		if(index != -1)
-			break;
-		content = ft_readingbuffer(fd);
 	}
 	if(index != -1)
 	{
@@ -98,11 +93,16 @@ char	*get_next_line(int fd)
 		content = ft_strdup(&holder_buffer[index + 1]);
 		free(holder_buffer);
 		holder_buffer = ft_strdup(content);
+		free(content);
 		return (line);
 	}
 	if(holder_buffer && *holder_buffer)
-		return(holder_buffer);
-	return (NULL);
+	{
+		line = ft_strdup(holder_buffer);
+		holder_buffer = NULL;
+		return (line);
+	}
+	return (line);
 }
 
 //01. Read the file using ft_readingbuffer store the output in content

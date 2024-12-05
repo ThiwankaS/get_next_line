@@ -6,7 +6,7 @@ int main(void)
 	int fd;
 	char *line;
 
-	fd = open("sample.txt", O_RDONLY);
+	fd = open("noline.txt", O_RDONLY);
 
 	if (fd == -1)
 		return (0);
@@ -14,9 +14,11 @@ int main(void)
 	while(line)
 	{
 		printf("%s", line);
+		fflush(stdout);
+		free(line);
 		line = get_next_line(fd);
 	}
-	free(line);
 	close(fd);
+	free(line);
 	return (0);
 }

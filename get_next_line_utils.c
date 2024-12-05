@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:23:19 by tsomacha          #+#    #+#             */
-/*   Updated: 2024/12/04 17:04:56 by tsomacha         ###   ########.fr       */
+/*   Updated: 2024/12/05 19:33:40 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		result[count + step] = s2[step];
 		step++;
 	}
+	free(s1);
 	result[count + step] = '\0';
 	return (result);
 }
