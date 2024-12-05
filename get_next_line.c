@@ -65,51 +65,42 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*content;
 	static char	*holder_buffer;
-	char *temp = "Test";
-	int step = 3;
 
 	index = 0;
-	content = ft_readingbuffer(fd);
-	printf("content 1 : %s\n", content);
-	holder_buffer = ft_strdup("");
-	printf("Holder Buffer 1 : %s\n", holder_buffer);
-	if(!content)
-		return (NULL);
-	index = ft_haschar(content, '\n');
-	printf("Index 1 : %ld\n", index);
+	line = NULL;
+	content = NULL;
+	if(!holder_buffer)
+		holder_buffer = ft_strdup("");
+	index = ft_haschar(holder_buffer, '\n');
 	if(index != -1)
 	{
-		line = ft_extract_newline(content, '\n');
-		content = ft_strchr(content, '\n');
+		line = ft_extract_newline(holder_buffer,'\n');
+		content = ft_strchr(holder_buffer, '\n');
+		free(holder_buffer);
 		holder_buffer = ft_strdup(&content[1]);
-		free(content);
 		return (line);
 	}
-	holder_buffer = ft_strdup(content);
-	printf("Holder Buffer 2 : %s\n", holder_buffer);
 	content = ft_readingbuffer(fd);
-	printf("content 2 : %s\n", content);
-	while(content && holder_buffer && index == -1)
+	if(!content)
+		return (NULL);
+	while(content && holder_buffer)
 	{
 		holder_buffer = ft_strjoin(holder_buffer, content);
-		printf("Holder Buffer %d : %s\n", step, holder_buffer);
+		free(content);
 		index = ft_haschar(holder_buffer, '\n');
-		if(index == -1)
-			content = ft_readingbuffer(fd);
-		printf("content %d : %s\n", step, content);
-		printf("Index %d : %ld\n", step, index);
-		step++;
+		if(index != -1)
+			break;
+		content = ft_readingbuffer(fd);
 	}
 	if(index != -1)
 	{
 		line = ft_extract_newline(holder_buffer, '\n');
-		printf("content 2 : %s\n", line);
-		content = ft_strchr(holder_buffer, '\n');
-		holder_buffer = ft_strdup(&content[1]);
-		free(content);
+		content = ft_strdup(&holder_buffer[index + 1]);
+		free(holder_buffer);
+		holder_buffer = ft_strdup(&content[2]);
 		return (line);
 	}
-	if(!content)
+	if(holder_buffer && *holder_buffer)
 		return(holder_buffer);
 	return (NULL);
 }

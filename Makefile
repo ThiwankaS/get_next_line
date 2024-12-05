@@ -1,28 +1,21 @@
-NAME = libftgetnextline.a
+NAME = test
 
 CMD = cc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined -D BUFFER_SIZE=50
 
 SRCS = get_next_line.c\
 		get_next_line_utils.c\
+		test.c\
 
-OBJS = $(SRCS:.c=.o)
-
-
-all: $(NAME)
-
-$(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
-
-%.o: %.c
-	$(CMD) $(CFLAGS) -c $< -o $@
+all:
+	$(CMD) $(CFLAGS) $(SRCS) -o $(NAME)
 
 clean:
-	rm -f $(OBJS)
+	rm -f *.o
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f *.o test
 
 re: fclean all
 
