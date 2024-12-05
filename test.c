@@ -11,7 +11,11 @@ int main(void)
 	if (fd == -1)
 		return (0);
 	line = get_next_line(fd);
-	printf("%s", line);
+	while(line)
+	{
+		printf("%s", line);
+		line = get_next_line(fd);
+	}
 	free(line);
 	close(fd);
 	return (0);
