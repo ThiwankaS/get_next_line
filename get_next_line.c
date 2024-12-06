@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:22:57 by tsomacha          #+#    #+#             */
-/*   Updated: 2024/12/05 19:32:48 by tsomacha         ###   ########.fr       */
+/*   Updated: 2024/12/06 19:11:37 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,24 @@ static char	*ft_extract_newline(char *str, int c)
 }
 static char	*ft_get_newline(char **buffer, int index)
 {
-	char		*line;
-	char		*content;
-	static char	*holder_buffer;
+	char	*line;
+	char	*new_buffer;
 
 	line = NULL;
-	content = NULL;
-	holder_buffer = *buffer;
-	line = ft_extract_newline(holder_buffer, '\n');
-	content = ft_strdup(&holder_buffer[index + 1]);
-	free(holder_buffer);
-	holder_buffer = ft_strdup(content);
-	free(content);
+	new_buffer = NULL;
+	if(!buffer || !*buffer || index < 0)
+	line = ft_extract_newline(*buffer, '\n');
+	if(!line)
+		return (NULL);
+	new_buffer = ft_strdup(&(*buffer)[index + 1]);
+	if(!new_buffer)
+	{
+		free(line);
+		return (NULL);
+	}
+	free(*buffer);
+	*buffer = new_buffer;
+	free(new_buffer);
 	return (line);
 }
 

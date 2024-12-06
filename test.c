@@ -6,7 +6,7 @@ int main(void)
 	int fd;
 	char *line;
 
-	fd = open("noline.txt", O_RDONLY);
+	fd = open("multiple_line_no_nl", O_RDONLY);
 
 	if (fd == -1)
 		return (0);
