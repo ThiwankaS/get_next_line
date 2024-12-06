@@ -83,8 +83,11 @@ char	*get_next_line(int fd)
 		content = ft_readingbuffer(fd);
 		if(!content)
 			break;
-		holder_buffer = ft_strjoin(holder_buffer, content);
+		line = ft_strjoin(holder_buffer, content);
+		free(holder_buffer);
 		free(content);
+		holder_buffer = ft_strdup(line);
+		free(line);
 		index = ft_haschar(holder_buffer, '\n');
 	}
 	if(index != -1)
@@ -99,6 +102,7 @@ char	*get_next_line(int fd)
 	if(holder_buffer && *holder_buffer)
 	{
 		line = ft_strdup(holder_buffer);
+		free(holder_buffer);
 		holder_buffer = NULL;
 		return (line);
 	}

@@ -12,25 +12,6 @@
 
 #include "get_next_line.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	size_t			count;
-	unsigned char	*ptr1;
-	unsigned char	*ptr2;
-
-	count = 0;
-	if (n == 0)
-		return (dest);
-	ptr1 = (unsigned char *)src;
-	ptr2 = (unsigned char *)dest;
-	while (count < n && ptr1 && ptr2)
-	{
-		ptr2[count] = ptr1[count];
-		count++;
-	}
-	return (dest);
-}
-
 size_t	ft_strlen(char *str)
 {
 	size_t	len;
@@ -53,20 +34,6 @@ ssize_t	ft_haschar(char *str, int c)
 		count++;
 	}
 	return (-1);
-}
-
-char	*ft_strchr(char *str, int c)
-{
-	size_t	count;
-
-	count = 0;
-	while (str && str[count])
-	{
-		if (str[count] == (char)c)
-			return (&str[count]);
-		count++;
-	}
-	return (NULL);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -94,7 +61,6 @@ char	*ft_strjoin(char *s1, char *s2)
 		result[count + step] = s2[step];
 		step++;
 	}
-	free(s1);
 	result[count + step] = '\0';
 	return (result);
 }
