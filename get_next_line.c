@@ -13,7 +13,7 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-char	*ft_extract_newline(char *str, int c)
+static char	*ft_extract_newline(char *str, int c)
 {
 	ssize_t	count;
 	ssize_t	index;
@@ -35,8 +35,24 @@ char	*ft_extract_newline(char *str, int c)
 	new_line[count + 1] = '\0';
 	return (new_line);
 }
+static char	*ft_get_newline(char **buffer, int index)
+{
+	char		*line;
+	char		*content;
+	static char	*holder_buffer;
 
-char	*ft_readingbuffer(int fd)
+	line = NULL;
+	content = NULL;
+	holder_buffer = *buffer;
+	line = ft_extract_newline(holder_buffer, '\n');
+	content = ft_strdup(&holder_buffer[index + 1]);
+	free(holder_buffer);
+	holder_buffer = ft_strdup(content);
+	free(content);
+	return (line);
+}
+
+static char	*ft_readingbuffer(int fd)
 {
 	ssize_t	byte_read;
 	char	*content;
@@ -67,22 +83,18 @@ char	*get_next_line(int fd)
 	index = -1;
 	line = NULL;
 	content = NULL;
-	if(holder_buffer)
+	if (holder_buffer)
 		index = ft_haschar(holder_buffer, '\n');
-	if(index != -1)
+	if (index != -1)
 	{
-		line = ft_extract_newline(holder_buffer, '\n');
-		content = ft_strdup(&holder_buffer[index + 1]);
-		free(holder_buffer);
-		holder_buffer = ft_strdup(content);
-		free(content);
+		line = ft_get_newline(&holder_buffer, index);
 		return (line);
 	}
-	while(index == -1)
+	while (index == -1)
 	{
 		content = ft_readingbuffer(fd);
-		if(!content)
-			break;
+		if (!content)
+			break ;
 		line = ft_strjoin(holder_buffer, content);
 		free(holder_buffer);
 		free(content);
@@ -90,7 +102,7 @@ char	*get_next_line(int fd)
 		free(line);
 		index = ft_haschar(holder_buffer, '\n');
 	}
-	if(index != -1)
+	if (index != -1)
 	{
 		line = ft_extract_newline(holder_buffer, '\n');
 		content = ft_strdup(&holder_buffer[index + 1]);
@@ -99,7 +111,7 @@ char	*get_next_line(int fd)
 		free(content);
 		return (line);
 	}
-	if(holder_buffer && *holder_buffer)
+	if (holder_buffer && *holder_buffer)
 	{
 		line = ft_strdup(holder_buffer);
 		free(holder_buffer);
@@ -108,20 +120,3 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
-
-//01. Read the file using ft_readingbuffer store the output in content
-//02. Check content is valid data
-//03. Store the data in Holder_buffer
-//04. Check for presence of \n if yes extract new line from it
-//05. If not read another chunk unsing ft_readingbuffer
-//06. Repeat the step 04 and 05 untill reach the EOF
-//07. Check for presence of \n if yes extract new line from it
-//08. If yes extract a new line and return save the remaining inside Holder_Buffer
-//09. if not return the entire thing store inside Holder_Buffer and Make empty the Holder_Buffer after return.
-//When the BUFFER_SIZE is larger than the file size, fd will become -1 in next call
-//This will cause to print the first line only
-//Need to handel this
-
-//Adding chunk of data to Holder_Buffer using content
-//While loop should run untill the Holder_Buffer get \n character inside
-//Extract new line unsing ft_extract_line

@@ -18,7 +18,7 @@ size_t	ft_strlen(char *str)
 
 	len = 0;
 	while (str && str[len] != '\0')
-			len++;
+		len++;
 	return (len);
 }
 
@@ -76,7 +76,7 @@ char	*ft_strdup(char *str)
 	result = malloc((len + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
-	while(str && str[count])
+	while (str && str[count])
 	{
 		result[count] = str[count];
 		count++;
