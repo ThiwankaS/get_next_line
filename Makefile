@@ -2,7 +2,7 @@ NAME = test
 
 CMD = cc
 
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined -D BUFFER_SIZE=500
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined -D BUFFER_SIZE=10
 
 SRCS = get_next_line.c\
 		get_next_line_utils.c\

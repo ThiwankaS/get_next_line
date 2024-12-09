@@ -11,98 +11,85 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-static char	*ft_get_newline(char **buffer, int c)
+static char	*ft_get_newline(char **buffer, int index)
 {
 	char	*line;
 	char	*new_buffer;
-	ssize_t	index;
 
 	line = NULL;
 	new_buffer = NULL;
-	index = ft_haschar(*buffer, c);
-	if (!buffer || !*buffer || index < 0)
+	if (!buffer || !*buffer)
 		return (line);
-	line = ft_extract_line(*buffer, c);
+	line = ft_extract_line(*buffer, '\n');
 	new_buffer = ft_strdup(&(*buffer)[index + 1]);
 	free(*buffer);
 	*buffer = new_buffer;
 	return (line);
 }
 
-static int	ft_check_for_existing_newline(char **buffer, char **line)
-{
-	int	c;
-
-	c = '\n';
-	if (!buffer || !*buffer)
-	{
-		*line = NULL;
-		return (0);
-	}
-	*line = ft_get_newline(buffer, c);
-	if (!line || !*line)
-	{
-		*line = NULL;
-		return (0);
-	}
-	return (1);
-}
-
-static int	ft_read_and_update_buffer(int fd, char **buffer, char **line)
+static char	*ft_readingbuffer(int fd)
 {
 	ssize_t	byte_read;
 	char	*content;
-	char	read_buffer[BUFFER_SIZE + 1];
-	int		c;
+	char	buffer[BUFFER_SIZE + 1];
 
-	c = '\n';
 	byte_read = 0;
 	content = NULL;
-	byte_read = read(fd, read_buffer, BUFFER_SIZE);
+	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (NULL);
+	byte_read = read(fd, buffer, BUFFER_SIZE);
 	if (byte_read <= 0)
 	{
 		free(content);
-		return (0);
+		return (NULL);
 	}
-	read_buffer[byte_read] = '\0';
-	free(*line);
-	*line = ft_strdup(read_buffer);
-	content = ft_strjoin(*buffer, *line);
-	free(*buffer);
-	free(*line);
-	*buffer = ft_strdup(content);
-	free(content);
-	*line = ft_get_newline(buffer, c);
-	return (1);
-}
-
-static int	ft_remaining_line(char **buffer, char **line)
-{
-	if (!buffer || !*buffer)
-		return (0);
-	*line = ft_strdup(*buffer);
-	free(*buffer);
-	*buffer = NULL;
-	return (1);
+	buffer[byte_read] = '\0';
+	content = ft_strdup(buffer);
+	return (content);
 }
 
 char	*get_next_line(int fd)
 {
+	ssize_t		index;
 	char		*line;
+	char		*content;
 	static char	*holder_buffer;
 
+	index = -1;
 	line = NULL;
-	if (ft_check_for_existing_newline(&holder_buffer, &line))
-		return (line);
-	while (ft_read_and_update_buffer(fd, &holder_buffer, &line))
+	content = NULL;
+	if (holder_buffer)
+		index = ft_haschar(holder_buffer, '\n');
+	if (index != -1)
 	{
-		if (line)
-			return (line);
-	}
-	if (ft_remaining_line(&holder_buffer, &line))
+		line = ft_get_newline(&holder_buffer, index);
 		return (line);
-	free(holder_buffer);
-	holder_buffer = NULL;
+	}
+	while (index == -1)
+	{
+		content = ft_readingbuffer(fd);
+		if (!content)
+			break ;
+		line = ft_strjoin(holder_buffer, content);
+		free(holder_buffer);
+		free(content);
+		holder_buffer = ft_strdup(line);
+		free(line);
+		index = ft_haschar(holder_buffer, '\n');
+	}
+	if (index != -1)
+	{
+		line = ft_get_newline(&holder_buffer, index);
+		return (line);
+	}
+	if (holder_buffer && *holder_buffer)
+	{
+		line = ft_strdup(holder_buffer);
+		free(holder_buffer);
+		holder_buffer = NULL;
+		return (line);
+	}
 	return (line);
 }
