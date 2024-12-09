@@ -72,6 +72,8 @@ char	*ft_strdup(char *str)
 	int		count;
 
 	count = 0;
+	if (!str || !*str)
+		return (NULL);
 	len = ft_strlen(str);
 	result = malloc((len + 1) * sizeof(char));
 	if (!result)
@@ -83,4 +85,27 @@ char	*ft_strdup(char *str)
 	}
 	result[count] = '\0';
 	return (result);
+}
+
+char	*ft_extract_line(char *str, int c)
+{
+	ssize_t	count;
+	ssize_t	index;
+	char	*new_line;
+
+	count = 0;
+	index = ft_haschar(str, c);
+	if (index < 0)
+		return (NULL);
+	new_line = malloc((index + 2) * sizeof(char));
+	if (!new_line)
+		return (NULL);
+	while (str && str[count] && count < index)
+	{
+		new_line[count] = str[count];
+		count++;
+	}
+	new_line[count] = '\n';
+	new_line[count + 1] = '\0';
+	return (new_line);
 }
