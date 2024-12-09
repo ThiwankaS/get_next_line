@@ -29,10 +29,11 @@
 #  define BUFFER_SIZE 7550000
 # endif
 
+char	*ft_strdup(char *str);
 char	*get_next_line(int fd);
 char	*ft_strjoin(char *s1, char *s2);
-char	*ft_strdup(char *str);
 char	*ft_extract_line(char *str, int c);
+
 size_t	ft_strlen(char *str);
 ssize_t	ft_haschar(char *str, int c);
 
